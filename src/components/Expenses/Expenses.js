@@ -1,17 +1,30 @@
 import Card from '../Card/Card';
-import ExpenseItem from './ExpenseItem/ExpenseItem';
+import ExpensesList from './ExpensesList/ExpensesList';
+import ExpenseFilter from './ExpenseFilter/ExpenseFilter';
+import ExpensesChart from './ExpensesChart/ExpensesChart';
 import './Expenses.css';
+import { useState } from 'react';
+
 export default function Expenses(props) {
+  const [filter, setFilter] = useState('2020');
+
+  const onFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
+  };
+  const filteredArray = props.expenses.filter(
+    (el) =>
+      el.date.toLocaleDateString('en-US', {
+        year: 'numeric',
+      }) === filter
+  );
+
+
+
   return (
     <Card className='expenses'>
-      {props.expenses.map((el) => (
-        <ExpenseItem
-          key={el.id}
-          expenseTitle={el.title}
-          expenseAmount={el.amount}
-          expenseDate={el.date}
-        />
-      ))}
+      <ExpenseFilter filter={filter} onFilterChange={onFilterChange} />
+      <ExpensesChart expenses={filteredArray} />
+      <ExpensesList items={filteredArray} />
     </Card>
   );
 }
